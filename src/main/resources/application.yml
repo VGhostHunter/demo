@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: demo
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    username: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+
+#server:
+#  ssl:
+#    key-store: classpath:demo.key
+#    key-store-password: 123456
+#    key-password: 123456
