@@ -23,6 +23,9 @@ steps:
   displayName: 'Install Docker 17.09.0-ce'
 
 - script: |
-  docker build -f Dockerfile -t $(imageName) .
-  docker login -u $(username) -p $(password)
-  docker push $(imageName)
+    docker build -f Dockerfile -t $(imageName) .
+    docker login -u $(username) -p $(password) 
+    docker push $(imageName)
+- task: DockerInstaller@0
+  inputs:
+    dockerVersion: '17.09.0-ce'
