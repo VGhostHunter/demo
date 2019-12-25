@@ -25,4 +25,5 @@ steps:
 - script: |
     docker build -f Dockerfile -t $(imageName) .
     docker login -u $(username) -p $(password) registry.cn-hangzhou.aliyuncs.com
-    docker push registry.cn-hangzhou.aliyuncs.com/haoyuv/project_test:$(imageName)
+    docker tag $(imageName) registry.cn-hangzhou.aliyuncs.com/haoyuv/project_test:$(imageName):latest
+    docker push registry.cn-hangzhou.aliyuncs.com/haoyuv/project_test:$(imageName):latest
