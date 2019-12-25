@@ -10,7 +10,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  imageName: '$(dockerId)/demo'
+  imageName: '$(username)/demo'
 
 steps:
 - task: Maven@3
