@@ -1,0 +1,28 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  imageName: '$(dockerId)/demo'
+
+steps:
+- task: Maven@3
+  displayName: 'Maven pom.xml'
+  inputs:
+    mavenPomFile: '$(Parameters.mavenPOMFile)'
+    goals: 'package -Dmaven.test.skip=true'
+
+- task: DockerInstaller@0
+  displayName: 'Install Docker 17.09.0-ce'
+
+- script: |
+  docker build -f Dockerfile -t $(imageName) .
+  docker login -u $(username) -p $(password)
+  docker push $(imageName)
