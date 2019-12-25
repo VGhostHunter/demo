@@ -25,4 +25,4 @@ steps:
 - script: |
     docker build -f Dockerfile -t $(imageName) .
     docker login --username=$(username) --password=$(password) registry.cn-hangzhou.aliyuncs.com
-    docker push registry.cn-hangzhou.aliyuncs.com/haoyuv/project_test:[$(imageName)]
+    docker push registry.cn-hangzhou.aliyuncs.com/haoyuv/project_test:$(imageName)
