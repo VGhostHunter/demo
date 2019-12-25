@@ -16,7 +16,7 @@ steps:
 - task: Maven@3
   displayName: 'Maven pom.xml'
   inputs:
-    mavenPomFile: '$(Parameters.mavenPOMFile)'
+    mavenPomFile: 'pom.xml'
     goals: 'package -Dmaven.test.skip=true'
 
 - task: DockerInstaller@0
@@ -26,6 +26,3 @@ steps:
     docker build -f Dockerfile -t $(imageName) .
     docker login -u $(username) -p $(password) 
     docker push $(imageName)
-- task: DockerInstaller@0
-  inputs:
-    dockerVersion: '17.09.0-ce'
