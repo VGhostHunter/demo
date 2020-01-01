@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.support.WebExchangeBindException;
 
 
 /**
@@ -26,12 +27,9 @@ public class BindingExceptionProcess {
     @ExceptionHandler(BindException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Result validExceptionHandler(BindException e) {
-        StringBuilder s = new StringBuilder();
-        e.getAllErrors().stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .forEach(msg -> {
-                    s.append(msg).append(";");
-                });
+        String s = e.getBindingResult().getFieldErrors().stream()
+                .map(ex -> ex.getField() + ": " + ex.getDefaultMessage())
+                .reduce("", (s1, s2) -> s1 + "; " + s2);
         log.info(s.toString());
         return new Result<>(HttpStatus.BAD_REQUEST, s.toString());
     }
@@ -44,12 +42,23 @@ public class BindingExceptionProcess {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Result validExceptionHandler(MethodArgumentNotValidException e) {
-        StringBuilder s = new StringBuilder();
-        e.getBindingResult().getAllErrors()
-                .forEach(error -> {
-                    s.append(error.getDefaultMessage()).append(";");
-                });
+        String s = e.getBindingResult().getFieldErrors().stream()
+                .map(ex -> ex.getField() + ": " + ex.getDefaultMessage())
+                .reduce("", (s1, s2) -> s1 + ": " + s2);
         log.info(s.toString());
-        return new Result<>(HttpStatus.BAD_REQUEST, s.toString());
+        return new Result<>(HttpStatus.BAD_REQUEST, s);
     }
+
+    /**
+     * 适用于新版 WebFlux
+     */
+//    @ExceptionHandler(WebExchangeBindException.class)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public Result validExceptionHandler(WebExchangeBindException e) {
+//        String s = e.getFieldErrors().stream()
+//                .map(ex -> ex.getField() + ": " + ex.getDefaultMessage())
+//                .reduce("", (s1, s2) -> s1 + "\n" + s2);
+//
+//        return new Result<>(HttpStatus.BAD_REQUEST, s);
+//    }
 }
