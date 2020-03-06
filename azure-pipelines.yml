@@ -13,11 +13,6 @@ variables:
   imageName: 'demo'
 
 steps:
-- task: Maven@3
-  displayName: 'Maven pom.xml'
-  inputs:
-    goals: 'package -Dmaven.test.skip=true'
-    publishJUnitResults: false
 
 - task: DockerInstaller@0
   displayName: 'Install Docker 17.09.0-ce'
