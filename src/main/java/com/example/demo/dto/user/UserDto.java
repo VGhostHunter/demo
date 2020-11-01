@@ -20,7 +20,7 @@ public class UserDto {
 
     public boolean hasPermission(String operate) {
         //TODO
-        if(this.loginName.equals("jack")) {
+        if(this.loginName.equals("admin")) {
             return true;
         }
         return false;

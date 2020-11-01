@@ -6,11 +6,11 @@ import com.example.demo.dto.user.UpdateUserDto;
 import com.example.demo.dto.user.UserDto;
 import com.example.demo.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 import java.util.Map;
 
 /**
@@ -57,13 +57,13 @@ public class UserController {
     }
 
     @PostMapping
-    private Result create(@Valid @RequestBody CreateUserDto userDto){
+    private Result create(@Validated @RequestBody CreateUserDto userDto){
         userService.create(userDto);
         return Result.succeeded();
     }
 
     @PutMapping
-    private Result update(@Valid @RequestBody UpdateUserDto userDto) {
+    private Result update(@Validated @RequestBody UpdateUserDto userDto) {
         userService.update(userDto);
         return Result.succeeded();
     }

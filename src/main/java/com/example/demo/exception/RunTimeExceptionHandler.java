@@ -22,9 +22,9 @@ public class RunTimeExceptionHandler {
     }
 
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Result exceptionHandler(Exception e){
+    public Result exceptionHandler(BusinessException e){
         e.printStackTrace();
         return new Result<>(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }

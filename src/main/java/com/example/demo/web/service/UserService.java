@@ -1,5 +1,7 @@
 package com.example.demo.web.service;
 
+import com.example.demo.config.password.PasswordEncode;
+import com.example.demo.exception.BusinessException;
 import com.example.demo.web.dao.UserRepository;
 import com.example.demo.dto.PageResult;
 import com.example.demo.dto.user.CreateUserDto;
@@ -8,12 +10,10 @@ import com.example.demo.dto.user.UserDto;
 import com.example.demo.entity.User;
 import com.example.demo.utils.BeanUtil;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -29,8 +29,14 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final PasswordEncode passwordEncode;
+
+    public UserService(UserRepository userRepository, PasswordEncode passwordEncode) {
+        this.userRepository = userRepository;
+        this.passwordEncode = passwordEncode;
+    }
 
     public UserDto get(String id) {
         Optional<User> byId = userRepository.findById(id);
@@ -79,8 +85,12 @@ public class UserService {
 
     public UserDto check(String username, String password){
         User user = userRepository.findByLoginName(username);
-        if(user != null && user.getPassword().equals(passwordEncode(password))) {
-            return user.toDto();
+        if(user != null) {
+            if(user.getPassword().equals(passwordEncode(password))) {
+                return user.toDto();
+            } else {
+                throw new BusinessException("用户名或密码错误");
+            }
         }
         return null;
     }
@@ -95,7 +105,7 @@ public class UserService {
 
     public UserDto currentUser() {
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        UserDto user = (UserDto) servletRequestAttributes.getRequest().getSession().getAttribute("user");
+        UserDto user = (UserDto) (servletRequestAttributes != null ? servletRequestAttributes.getRequest().getSession().getAttribute("user") : null);
         return user;
     }
 
@@ -117,6 +127,7 @@ public class UserService {
     }
 
     private String passwordEncode(String password) {
-        return Base64Utils.encodeToString(password.getBytes());
+        return passwordEncode.encode(password);
     }
+
 }

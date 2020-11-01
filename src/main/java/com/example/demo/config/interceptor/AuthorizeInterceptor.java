@@ -24,10 +24,16 @@ public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
 
         UserDto userDto = userService.currentUser();
 
-        if(userDto == null || !userDto.hasPermission("operate")) {
+        if(userDto == null) {
             response.setContentType("text/plain");
-            response.getWriter().write("UnAuthorization");
+            response.getWriter().write("Unauthorized");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
+
+            return false;
+        } else if(!userDto.hasPermission("operate")) {
+            response.setContentType("text/plain");
+            response.getWriter().write("Forbidden");
+            response.setStatus(HttpStatus.FORBIDDEN.value());
 
             return false;
         }
